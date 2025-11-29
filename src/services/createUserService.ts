@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto'
 import { User } from '../models/user'
 import { UserRepository } from '../repo/userRepository'
 import { hashPasswrod } from '../utils/hash'
+import { AppError } from '../errors/AppError'
 
 interface CreateUserServiceRequest {
   name: string
@@ -32,7 +33,7 @@ export class CreateUserService {
 
     const userWithSameEmail = await this.userRepository.findByEmail(email)
     if (userWithSameEmail) {
-      throw new Error('Email already in used')
+      throw new AppError('Email already in use', 409, 'EMAIL_IN_USE')
     }
 
     const user = await this.userRepository.create({

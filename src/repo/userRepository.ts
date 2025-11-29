@@ -1,5 +1,6 @@
 import { db } from '../database'
 import { User } from '../models/user'
+import { AppError } from '../errors/AppError'
 
 const TABLE_NAME = 'users'
 
@@ -20,7 +21,7 @@ export class UserRepository {
     const existingUser = await this.findByEmail(userData.email)
 
     if (existingUser) {
-      throw new Error('User already exist')
+      throw new AppError('User already exists', 409, 'USER_ALREADY_EXISTS')
     }
 
     const [user] = await db<User>(TABLE_NAME).insert(userData).returning('*')
@@ -28,7 +29,7 @@ export class UserRepository {
     const newUser = await this.findById(user!.id)
 
     if (!newUser) {
-      throw new Error('User creation failed')
+      throw new AppError('User creation failed', 500, 'USER_CREATION_FAILED')
     }
 
     return newUser

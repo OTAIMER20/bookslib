@@ -1,17 +1,28 @@
 import jwt from 'jsonwebtoken'
 import { env } from '../config/env'
 
-interface JwtPayload {
+interface AccessTokenPayload {
   userId: string
   role: 'publisher' | 'reader'
 }
 
-export function generateToken(payload: JwtPayload): string {
-  return jwt.sign(payload, env.JWT_SECRET, { expiresIn: '1d' })
+interface RefreshTokenPayload {
+  userId: string
+  role: 'publisher' | 'reader'
 }
 
-export function verifyToken(token: string): JwtPayload {
-  const decoded = jwt.verify(token, env.JWT_SECRET)
+export function generateAccessToken(payload: AccessTokenPayload): string {
+  return jwt.sign(payload, env.JWT_SECRET, {
+    expiresIn: '1d',
+  })
+}
 
-  return decoded as JwtPayload
+export function generateRefreshToken(payload: RefreshTokenPayload): string {
+  return jwt.sign(payload, env.JWT_SECRET, {
+    expiresIn: '7d',
+  })
+}
+
+export function verifyToken(token: string) {
+  return jwt.verify(token, env.JWT_SECRET)
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import {
   verifyToken,
@@ -5,11 +6,7 @@ import {
   generateRefreshToken,
 } from '../utils/jwt'
 
-interface RefreshRequest extends Request {
-  user?: { userId: string; role: 'publisher' | 'reader' }
-}
-
-export async function refreshController(req: RefreshRequest, res: Response) {
+export async function refreshController(req: Request, res: Response) {
   try {
     const token = req.cookies?.refreshToken
 
@@ -17,12 +14,7 @@ export async function refreshController(req: RefreshRequest, res: Response) {
       return res.status(401).json({ message: 'Refresh token missing' })
     }
 
-    const decoded = verifyToken(token) as {
-      userId: string
-      role: 'publisher' | 'reader'
-    }
-
-    req.user = decoded // adiciona para poder usar noutros middlewares se precisares
+    const decoded: any = verifyToken(token)
 
     const accessToken = generateAccessToken({
       userId: decoded.userId,
