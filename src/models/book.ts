@@ -1,0 +1,20 @@
+export interface Book {
+  id: string
+  title: string
+  genre: string
+  ageRating: number
+  summary: string
+  author: string
+  publishedDate: Date
+  publisherId: string
+}
+
+export interface CreateBookPayload {
+  title: string
+  genre: string
+  ageRating: number
+  summary: string
+  author: string
+  publishedDate: Date
+  publisherId: string
+}
