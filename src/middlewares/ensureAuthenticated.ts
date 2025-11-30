@@ -76,9 +76,7 @@ export async function authRoute(
 
   try {
     const decoded = verifyToken(token) as AuthenticatedRequest['user']
-
     req.user = decoded
-
     next()
   } catch (err) {
     return res.status(401).json({ message: 'Invalid token' })
