@@ -1,6 +1,6 @@
 import { UserRepository } from '../repo/userRepository'
 
-export class UpadteRoleService {
+export class UpdateRoleService {
   private userRepository: UserRepository
 
   constructor() {
