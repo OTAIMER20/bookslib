@@ -57,7 +57,7 @@ export interface AuthenticatedRequest extends Request {
   }
 }
 
-export function authRoute(
+export async function authRoute(
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,

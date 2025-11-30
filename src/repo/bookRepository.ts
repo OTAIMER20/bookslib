@@ -11,7 +11,7 @@ export class BookRepository {
     return books
   }
 
-  async create(bookData: Omit<Book, 'id'>): Promise<Book> {
+  async create(bookData: Book): Promise<Book> {
     const [book] = await db<Book>(TABLE_NAME).insert(bookData).returning('*')
 
     const newBook = await this.findById(book!.id)

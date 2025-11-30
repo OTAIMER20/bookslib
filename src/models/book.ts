@@ -3,7 +3,7 @@ export interface Book {
   title: string
   genre: string
   ageRating: number
-  summary: string
+  resume: string
   author: string
   publishedDate: Date
   publisherId: string
@@ -13,7 +13,7 @@ export interface CreateBookPayload {
   title: string
   genre: string
   ageRating: number
-  summary: string
+  resume: string
   author: string
   publishedDate: Date
   publisherId: string
