@@ -4,9 +4,9 @@ import { Book } from '../models/book'
 const TABLE_NAME = 'books'
 
 export class BookRepository {
-  async findByTitle(title: string): Promise<Book | undefined> {
+  async findByTitle(title: string, userAge: number): Promise<Book | undefined> {
     // eslint-disable-next-line prettier/prettier
-    const [books] = await db<Book>(TABLE_NAME).where('title', 'ilike', `%${title}%`)
+    const [books] = await db<Book>(TABLE_NAME).where('title', 'ilike', `%${title}%`).andWhere('ageRating', '<=', userAge)
 
     return books
   }
@@ -28,9 +28,9 @@ export class BookRepository {
     return db<Book>(TABLE_NAME).where({ genre })
   }
 
-  async findByAuthor(author: string): Promise<Book[]> {
+  async findByAuthor(author: string, userAge: number): Promise<Book[]> {
     // eslint-disable-next-line prettier/prettier
-    return db<Book>(TABLE_NAME).where('author', 'ilike', `%${author}%`)
+    return db<Book>(TABLE_NAME).where('author', 'ilike', `%${author}%`).andWhere('ageRating', '<=', userAge)
   }
 
   async findByAgeRating(ageRating: number): Promise<Book[]> {
@@ -44,9 +44,25 @@ export class BookRepository {
     return deletedCount
   }
 
+  async updateById(
+    bookId: string,
+    publisherId: string,
+    updateData: Partial<Book>,
+  ): Promise<Book | undefined> {
+    await db<Book>(TABLE_NAME)
+      .where({ id: bookId, publisherId })
+      .update(updateData)
+
+    return this.findById(bookId)
+  }
+
   async findById(bookId: string): Promise<Book | undefined> {
     const book = await db<Book>(TABLE_NAME).where({ id: bookId }).first()
 
     return book
+  }
+
+  async getAllBooks(userAge: number): Promise<Book[]> {
+    return db<Book>(TABLE_NAME).select('*').where('ageRating', '<=', userAge)
   }
 }

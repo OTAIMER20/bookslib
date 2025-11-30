@@ -34,4 +34,13 @@ export class UserRepository {
 
     return newUser
   }
+
+  async updateRole(
+    userId: string,
+    role: 'publisher' | 'reader',
+  ): Promise<User | undefined> {
+    await db<User>(TABLE_NAME).where({ id: userId }).update({ role })
+
+    return this.findById(userId)
+  }
 }

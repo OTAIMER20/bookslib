@@ -52,6 +52,7 @@ export interface AuthenticatedRequest extends Request {
   user: {
     userId: string
     role: 'publisher' | 'reader'
+    age: number
     iat: number
     exp: number
   }
@@ -75,8 +76,24 @@ export async function authRoute(
   }
 
   try {
-    const decoded = verifyToken(token) as AuthenticatedRequest['user']
-    req.user = decoded
+    const decoded = verifyToken(token) as Omit<
+      AuthenticatedRequest['user'],
+      'age'
+    >
+
+    // Buscar a idade do usuário do banco de dados
+    const { UserRepository } = await import('../repo/userRepository.js')
+    const userRepository = new UserRepository()
+    const user = await userRepository.findById(decoded.userId)
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' })
+    }
+
+    req.user = {
+      ...decoded,
+      age: user.age,
+    }
     next()
   } catch (err) {
     return res.status(401).json({ message: 'Invalid token' })
